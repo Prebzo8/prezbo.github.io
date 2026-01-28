@@ -4,205 +4,244 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>macOS Desktop</title>
+<title>macOS Simulator</title>
 
 <style>
 /* ===== RESET ===== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-               "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-/* ===== DESKTOP ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  height: 100vh;
-  background: url("wallpaper.jpg") center/cover no-repeat fixed;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text";
   overflow: hidden;
 }
 
-/* ===== MENU BAR ===== */
-.menubar {
+/* ===== STATES ===== */
+.screen {
   position: fixed;
-  top: 0;
-  width: 100%;
-  height: 28px;
-  background: rgba(25,25,25,0.65);
-  backdrop-filter: blur(20px);
+  inset: 0;
+  display: none;
+}
+.active { display: block; }
+
+/* ===== BOOT ===== */
+#boot {
+  background: black;
+  color: white;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  color: white;
-  font-size: 13px;
+  justify-content: center;
+  font-size: 64px;
 }
 
-.menubar-left span {
-  margin-right: 14px;
-  font-weight: 500;
+/* ===== LOCK ===== */
+#lock {
+  background: url("wallpaper.jpg") center/cover no-repeat;
 }
-
-.menubar-right {
-  margin-left: auto;
-  display: flex;
-  gap: 12px;
-}
-
-/* ===== PASSWORD PROMPT ===== */
-.login {
+.lock-box {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(25px);
-  padding: 24px 26px;
-  border-radius: 14px;
+  inset: 0;
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   color: white;
-  width: 280px;
-  text-align: center;
 }
-
-.login input {
-  width: 100%;
+.lock-box input {
   margin-top: 14px;
   padding: 10px;
   border-radius: 8px;
   border: none;
 }
 
-.login button {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
+/* ===== DESKTOP ===== */
+#desktop {
+  background: url("wallpaper.jpg") center/cover no-repeat;
 }
 
-#error {
-  margin-top: 10px;
+/* ===== MENU BAR ===== */
+.menubar {
+  height: 28px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(20px);
+  color: white;
   font-size: 13px;
-  color: #f87171;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+.right { margin-left: auto; }
+
+/* ===== DESKTOP ICONS ===== */
+.icons {
+  position: absolute;
+  top: 40px;
+  left: 20px;
+}
+.icon {
+  width: 64px;
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
+  cursor: pointer;
 }
 
 /* ===== DOCK ===== */
 .dock {
   position: fixed;
-  bottom: 10px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(20,20,20,0.55);
-  backdrop-filter: blur(30px);
-  border-radius: 18px;
-  padding: 10px 14px;
   display: flex;
-  gap: 12px;
+  gap: 14px;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(25px);
+  border-radius: 20px;
 }
-
 .dock img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 52px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+.dock img.bounce {
+  animation: bounce 0.6s;
+}
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-14px); }
+  60% { transform: translateY(0); }
 }
 
-/* ===== VIDEO ===== */
-.video-app {
+/* ===== VIDEO APP ===== */
+#videoApp {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(30px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+video {
   width: 80%;
   max-width: 960px;
+  border-radius: 14px;
+}
+
+/* ===== MISSION CONTROL ===== */
+#mission {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(40px);
   display: none;
 }
-
-video {
-  width: 100%;
-  border-radius: 14px;
-  background: black;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  .dock { display: none; }
-  .video-app { width: 100%; height: auto; }
+.mission-thumb {
+  width: 60%;
+  height: 40%;
+  margin: 80px auto;
+  background: url("wallpaper.jpg") center/cover no-repeat;
+  border-radius: 20px;
+  transform: scale(0.9);
 }
 </style>
 </head>
 
 <body>
 
-<!-- MENU BAR -->
-<div class="menubar">
-  <div class="menubar-left">
-    <span></span>
-    <span>Finder</span>
-    <span>File</span>
-    <span>Edit</span>
-    <span>View</span>
-    <span>Go</span>
-    <span>Window</span>
-    <span>Help</span>
-  </div>
-  <div class="menubar-right">
-    <span>📶</span>
-    <span>🔋</span>
-    <span id="time"></span>
+<!-- BOOT -->
+<div id="boot" class="screen active"></div>
+
+<!-- LOCK -->
+<div id="lock" class="screen">
+  <div class="lock-box">
+    <h2>Enter Password</h2>
+    <input type="password" id="pw">
+    <button onclick="unlock()">Unlock</button>
   </div>
 </div>
 
-<!-- PASSWORD -->
-<div class="login">
-  <h3>Enter Password</h3>
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="unlock()">Log In</button>
-  <div id="error"></div>
-</div>
+<!-- DESKTOP -->
+<div id="desktop" class="screen">
+  <div class="menubar">
+     Finder File Edit View Go Window Help
+    <div class="right" id="clock"></div>
+  </div>
 
-<!-- DOCK -->
-<div class="dock">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Finder_icon_macOS.png">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Safari_browser_logo.svg">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Apple_TV_Plus_logo.svg">
+  <div class="icons">
+    <div class="icon" onclick="openVideo()">🎬<br>Video</div>
+    <div class="icon">📁<br>Files</div>
+  </div>
+
+  <div class="dock">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Finder_icon_macOS.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Apple_TV_Plus_logo.svg"
+         onclick="dockLaunch(this)">
+  </div>
 </div>
 
 <!-- VIDEO -->
-<div class="video-app" id="videoApp">
-  <video id="video" controls playsinline preload="auto">
+<div id="videoApp">
+  <video controls>
     <source src="video.mp4" type="video/mp4">
   </video>
 </div>
 
+<!-- MISSION CONTROL -->
+<div id="mission">
+  <div class="mission-thumb"></div>
+</div>
+
 <script>
-const PASSWORD = "Patrick2924";
+const PASSWORD = "REPLACE_THIS_PASSWORD";
 
+/* BOOT → LOCK */
+setTimeout(() => {
+  show("lock");
+}, 2000);
+
+/* UNLOCK */
 function unlock() {
-  const input = document.getElementById("password").value;
-  const error = document.getElementById("error");
-
-  if (input === PASSWORD) {
-    document.querySelector(".login").style.display = "none";
-    document.getElementById("videoApp").style.display = "block";
-    document.getElementById("video").load();
-    error.textContent = "";
-  } else {
-    error.textContent = "Incorrect password";
+  if (document.getElementById("pw").value === PASSWORD) {
+    show("desktop");
   }
 }
 
-function updateTime() {
-  const now = new Date();
-  document.getElementById("time").textContent =
-    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+/* SCREEN SWITCH */
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-setInterval(updateTime, 1000);
-updateTime();
+/* CLOCK */
+setInterval(() => {
+  document.getElementById("clock").textContent =
+    new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}, 1000);
+
+/* DOCK LAUNCH */
+function dockLaunch(el) {
+  el.classList.add("bounce");
+  setTimeout(() => el.classList.remove("bounce"), 600);
+  openVideo();
+}
+
+/* VIDEO */
+function openVideo() {
+  document.getElementById("videoApp").style.display = "flex";
+  document.querySelector("video").play();
+}
+
+/* MISSION CONTROL */
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowUp") {
+    document.getElementById("mission").style.display = "block";
+  }
+  if (e.key === "Escape") {
+    document.getElementById("mission").style.display = "none";
+    document.getElementById("videoApp").style.display = "none";
+  }
+});
 </script>
 
 </body>
