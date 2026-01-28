@@ -3,18 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>macOS Simulator</title>
+<title>macOS Desktop</title>
 
 <style>
-/* ===== RESET ===== */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text";
   overflow: hidden;
 }
 
-/* ===== STATES ===== */
+/* SCREENS */
 .screen {
   position: fixed;
   inset: 0;
@@ -22,7 +20,7 @@ body {
 }
 .active { display: block; }
 
-/* ===== BOOT ===== */
+/* BOOT */
 #boot {
   background: black;
   color: white;
@@ -32,13 +30,12 @@ body {
   font-size: 64px;
 }
 
-/* ===== LOCK ===== */
+/* LOCK */
 #lock {
   background: url("wallpaper.jpg") center/cover no-repeat;
 }
 .lock-box {
-  position: absolute;
-  inset: 0;
+  height: 100%;
   backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
@@ -46,22 +43,22 @@ body {
   justify-content: center;
   color: white;
 }
-.lock-box input {
-  margin-top: 14px;
+.lock-box input, .lock-box button {
+  margin-top: 12px;
   padding: 10px;
   border-radius: 8px;
   border: none;
 }
 
-/* ===== DESKTOP ===== */
+/* DESKTOP */
 #desktop {
   background: url("wallpaper.jpg") center/cover no-repeat;
 }
 
-/* ===== MENU BAR ===== */
+/* MENU BAR */
 .menubar {
   height: 28px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.55);
   backdrop-filter: blur(20px);
   color: white;
   font-size: 13px;
@@ -69,23 +66,21 @@ body {
   align-items: center;
   padding: 0 12px;
 }
-.right { margin-left: auto; }
+.menubar .right { margin-left: auto; }
 
-/* ===== DESKTOP ICONS ===== */
+/* ICONS */
 .icons {
   position: absolute;
   top: 40px;
   left: 20px;
+  color: white;
 }
 .icon {
-  width: 64px;
-  text-align: center;
-  color: white;
   margin-bottom: 20px;
   cursor: pointer;
 }
 
-/* ===== DOCK ===== */
+/* DOCK */
 .dock {
   position: fixed;
   bottom: 12px;
@@ -100,23 +95,22 @@ body {
 }
 .dock img {
   width: 52px;
-  transition: transform 0.2s;
   cursor: pointer;
 }
-.dock img.bounce {
-  animation: bounce 0.6s;
+.bounce {
+  animation: bounce 0.5s;
 }
 @keyframes bounce {
   0% { transform: translateY(0); }
-  30% { transform: translateY(-14px); }
-  60% { transform: translateY(0); }
+  40% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
 }
 
-/* ===== VIDEO APP ===== */
+/* VIDEO APP */
 #videoApp {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
   backdrop-filter: blur(30px);
   display: none;
   align-items: center;
@@ -124,25 +118,21 @@ body {
 }
 video {
   width: 80%;
-  max-width: 960px;
+  max-width: 900px;
   border-radius: 14px;
+  background: black;
 }
 
-/* ===== MISSION CONTROL ===== */
-#mission {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(40px);
-  display: none;
-}
-.mission-thumb {
-  width: 60%;
-  height: 40%;
-  margin: 80px auto;
-  background: url("wallpaper.jpg") center/cover no-repeat;
-  border-radius: 20px;
-  transform: scale(0.9);
+/* BUTTON */
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -169,12 +159,10 @@ video {
   </div>
 
   <div class="icons">
-    <div class="icon" onclick="openVideo()">🎬<br>Video</div>
-    <div class="icon">📁<br>Files</div>
+    <div class="icon" onclick="openVideo()">🎬 Video</div>
   </div>
 
   <div class="dock">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Finder_icon_macOS.png">
     <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Apple_TV_Plus_logo.svg"
          onclick="dockLaunch(this)">
   </div>
@@ -182,23 +170,23 @@ video {
 
 <!-- VIDEO -->
 <div id="videoApp">
-  <video controls>
+  <button class="close" onclick="closeVideo()">Close</button>
+  <video controls playsinline preload="auto">
     <source src="video.mp4" type="video/mp4">
   </video>
-</div>
-
-<!-- MISSION CONTROL -->
-<div id="mission">
-  <div class="mission-thumb"></div>
 </div>
 
 <script>
 const PASSWORD = "Patrick2924";
 
 /* BOOT → LOCK */
-setTimeout(() => {
-  show("lock");
-}, 2000);
+setTimeout(() => show("lock"), 2000);
+
+/* SCREEN SWITCH */
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
 /* UNLOCK */
 function unlock() {
@@ -207,41 +195,24 @@ function unlock() {
   }
 }
 
-/* SCREEN SWITCH */
-function show(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
 /* CLOCK */
 setInterval(() => {
   document.getElementById("clock").textContent =
     new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 }, 1000);
 
-/* DOCK LAUNCH */
+/* VIDEO */
 function dockLaunch(el) {
   el.classList.add("bounce");
-  setTimeout(() => el.classList.remove("bounce"), 600);
+  setTimeout(() => el.classList.remove("bounce"), 500);
   openVideo();
 }
-
-/* VIDEO */
 function openVideo() {
   document.getElementById("videoApp").style.display = "flex";
-  document.querySelector("video").play();
 }
-
-/* MISSION CONTROL */
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowUp") {
-    document.getElementById("mission").style.display = "block";
-  }
-  if (e.key === "Escape") {
-    document.getElementById("mission").style.display = "none";
-    document.getElementById("videoApp").style.display = "none";
-  }
-});
+function closeVideo() {
+  document.getElementById("videoApp").style.display = "none";
+}
 </script>
 
 </body>
