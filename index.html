@@ -161,16 +161,16 @@ html, body {
 #videoWindow {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
   display: none;
   align-items: center;
   justify-content: center;
+  background: rgba(0,0,0,0.85);
   z-index: 60;
 }
 
-video {
-  max-width: 90%;
-  max-height: 90%;
+#videoWindow video {
+  max-width: 80%;
+  max-height: 80%;
   border-radius: 12px;
 }
 
@@ -178,9 +178,9 @@ video {
   position: absolute;
   top: 20px;
   right: 20px;
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 6px 12px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
 }
 </style>
@@ -188,10 +188,10 @@ video {
 
 <body>
 
-<!-- BOOT -->
+<!-- BOOT SCREEN -->
 <div id="boot"></div>
 
-<!-- LOCK -->
+<!-- LOCK SCREEN -->
 <div id="lock">
   <div id="lockCard">
     <div id="avatar"></div>
@@ -211,7 +211,7 @@ video {
     <div id="clock"></div>
   </div>
 
-  <!-- VIDEO FOLDER TOP-RIGHT -->
+  <!-- TOP-RIGHT VIDEO FOLDER -->
   <div id="videoFolder" onclick="openVideo()">
     <img src="vlc.png">
     <span>Video</span>
@@ -228,9 +228,9 @@ video {
 
 </div>
 
-<!-- VIDEO -->
+<!-- VIDEO WINDOW -->
 <div id="videoWindow">
-  <button class="closeVideo" onclick="closeVideo()">Close</button>
+  <button class="closeVideo" onclick="closeVideo()">✕</button>
   <video id="video" muted playsinline>
     <source src="video.mp4" type="video/mp4">
   </video>
@@ -262,9 +262,13 @@ function unlock() {
 }
 
 /* VIDEO HANDLERS */
+const videoWindow = document.getElementById("videoWindow");
+const video = document.getElementById("video");
+
 function openVideo() {
   videoWindow.style.display = "flex";
-  video.play();
+  video.currentTime = 0;
+  video.play().catch(e => console.log("Video play failed:", e));
 }
 
 function closeVideo() {
