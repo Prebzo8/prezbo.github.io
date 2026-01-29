@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>macOS Simulator</title>
+
 <style>
 html, body {
   margin: 0;
@@ -14,6 +15,7 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
   background: black;
 }
+
 /* BOOT SCREEN */
 #boot {
   position: fixed;
@@ -26,6 +28,7 @@ html, body {
   color: white;
   z-index: 50;
 }
+
 /* LOCK SCREEN */
 #lock {
   position: fixed;
@@ -37,6 +40,7 @@ html, body {
   backdrop-filter: blur(14px);
   z-index: 40;
 }
+
 #lockCard {
   background: rgba(0,0,0,0.4);
   padding: 28px 36px;
@@ -46,27 +50,32 @@ html, body {
   align-items: center;
   gap: 14px;
 }
+
 #avatar {
   width: 90px;
   height: 90px;
   border-radius: 50%;
   background: #cfcfcf;
 }
+
 #username {
   color: white;
   font-size: 18px;
 }
+
 #password {
   padding: 10px 14px;
   border-radius: 12px;
   border: none;
   font-size: 16px;
 }
+
 #error {
   color: white;
   font-size: 14px;
   display: none;
 }
+
 /* DESKTOP */
 #desktop {
   position: fixed;
@@ -74,6 +83,7 @@ html, body {
   background: url("wallpaper.jpg") center/cover no-repeat;
   display: none;
 }
+
 /* MENU BAR */
 #menubar {
   position: absolute;
@@ -88,7 +98,8 @@ html, body {
   padding: 0 14px;
   font-size: 13px;
 }
-/* TOP-RIGHT VIDEO FOLDER */
+
+/* DESKTOP ICON */
 #videoFolder {
   position: absolute;
   top: 40px;
@@ -98,15 +109,18 @@ html, body {
   align-items: center;
   cursor: pointer;
 }
+
 #videoFolder img {
   width: 56px;
   height: 56px;
 }
+
 #videoFolder span {
   color: white;
   font-size: 12px;
   margin-top: 4px;
 }
+
 /* DOCK */
 #dock {
   position: absolute;
@@ -120,24 +134,18 @@ html, body {
   display: flex;
   gap: 16px;
 }
+
 .dock-icon {
   width: 64px;
   height: 64px;
   cursor: pointer;
   transition: transform 0.2s;
 }
+
 .dock-icon:hover {
   transform: scale(1.25);
 }
-@keyframes bounce {
-  0% { transform: translateY(0) scale(1.1); }
-  30% { transform: translateY(-18px) scale(1.2); }
-  60% { transform: translateY(0) scale(1.1); }
-  100% { transform: translateY(0) scale(1); }
-}
-.dock-icon:active {
-  animation: bounce 0.5s;
-}
+
 /* VIDEO WINDOW */
 #videoWindow {
   position: fixed;
@@ -148,11 +156,13 @@ html, body {
   background: rgba(0,0,0,0.85);
   z-index: 60;
 }
+
 #videoWindow video {
   max-width: 80%;
   max-height: 80%;
   border-radius: 12px;
 }
+
 .closeVideo {
   position: absolute;
   top: 20px;
@@ -162,12 +172,78 @@ html, body {
   border-radius: 8px;
   cursor: pointer;
 }
+
+/* NOTES WINDOW */
+#notesWindow {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 70;
+}
+
+.notes-box {
+  width: 560px;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.notes-title {
+  font-weight: 600;
+}
+
+.closeNotes {
+  border: none;
+  background: #ff5f57;
+  color: white;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.notes-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.notes-content h2 {
+  margin-top: 0;
+}
+
+.notes-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.notes-images img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
 </style>
 </head>
+
 <body>
-<!-- BOOT SCREEN -->
+
+<!-- BOOT -->
 <div id="boot"></div>
-<!-- LOCK SCREEN -->
+
+<!-- LOCK -->
 <div id="lock">
   <div id="lockCard">
     <div id="avatar"></div>
@@ -177,37 +253,62 @@ html, body {
     <div id="error">Incorrect Password</div>
   </div>
 </div>
+
 <!-- DESKTOP -->
 <div id="desktop">
-  <!-- MENU BAR -->
   <div id="menubar">
     <div> Finder File Edit View Go Window Help</div>
     <div id="clock"></div>
   </div>
-  <!-- TOP-RIGHT VIDEO FOLDER -->
+
   <div id="videoFolder" onclick="openVideo()">
     <img src="vlc.png">
     <span>Video</span>
   </div>
-  <!-- DOCK -->
+
   <div id="dock">
     <img class="dock-icon" src="finder.png">
     <img class="dock-icon" src="safari.png">
     <img class="dock-icon" src="vlc.png" onclick="openVideo()">
-    <img class="dock-icon" src="system.png">
+    <img class="dock-icon" src="notes.png" onclick="openNotes()">
     <img class="dock-icon" src="terminal.png">
   </div>
 </div>
+
 <!-- VIDEO WINDOW -->
 <div id="videoWindow">
   <button class="closeVideo" onclick="closeVideo()">✕</button>
   <video id="video" controls autoplay muted playsinline>
     <source src="video.mp4" type="video/mp4">
-    Your browser does not support the video tag, or the file failed to load.
   </video>
 </div>
+
+<!-- NOTES WINDOW -->
+<div id="notesWindow">
+  <div class="notes-box">
+    <div class="notes-header">
+      <span class="notes-title">Notes</span>
+      <button class="closeNotes" onclick="closeNotes()">✕</button>
+    </div>
+    <div class="notes-content">
+      <h2>READ ME🚨</h2>
+      <div class="notes-images">
+        <img src="note1.png">
+        <img src="note2.png">
+        <img src="note3.png">
+        <img src="note4.png">
+        <img src="note5.png">
+        <img src="note6.png">
+        <img src="note7.png">
+        <img src="note8.png">
+        <img src="note9.png">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const CORRECT_PASSWORD = "Patrick2924";
+const CORRECT_PASSWORD = "macbook";
 
 const boot = document.getElementById("boot");
 const lock = document.getElementById("lock");
@@ -215,15 +316,21 @@ const desktop = document.getElementById("desktop");
 const passwordInput = document.getElementById("password");
 const error = document.getElementById("error");
 const clock = document.getElementById("clock");
+
 const videoWindow = document.getElementById("videoWindow");
 const video = document.getElementById("video");
 
+const notesWindow = document.getElementById("notesWindow");
+
 /* CLOCK */
 setInterval(() => {
-  clock.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  clock.textContent = new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }, 1000);
 
-/* BOOT SCREEN */
+/* BOOT */
 setTimeout(() => {
   boot.style.display = "none";
   lock.style.display = "flex";
@@ -234,23 +341,21 @@ function unlock() {
   if (passwordInput.value === CORRECT_PASSWORD) {
     lock.style.display = "none";
     desktop.style.display = "block";
-    passwordInput.value = "";  // Clear password on success
-    openVideo();  // Automatically play the video after successful unlock
+    passwordInput.value = "";
+    openVideo();
   } else {
     error.style.display = "block";
     setTimeout(() => error.style.display = "none", 1500);
-    passwordInput.value = "";  // Clear password on failure
+    passwordInput.value = "";
   }
 }
 
-/* VIDEO HANDLERS */
+/* VIDEO */
 function openVideo() {
   videoWindow.style.display = "flex";
   video.currentTime = 0;
-  video.load();  // Reload source if needed
-  video.play()
-    .then(() => console.log("Video played successfully"))
-    .catch(e => console.log("Video play failed:", e.message));
+  video.load();
+  video.play().catch(() => {});
 }
 
 function closeVideo() {
@@ -258,6 +363,16 @@ function closeVideo() {
   video.currentTime = 0;
   videoWindow.style.display = "none";
 }
+
+/* NOTES */
+function openNotes() {
+  notesWindow.style.display = "flex";
+}
+
+function closeNotes() {
+  notesWindow.style.display = "none";
+}
 </script>
+
 </body>
 </html>
