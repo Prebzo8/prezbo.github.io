@@ -4,246 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>macOS Simulator</title>
-
 <style>
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  margin: 0; padding: 0; width: 100%; height: 100%;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
   background: black;
 }
 
-/* BOOT SCREEN */
-#boot {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-  color: white;
-  z-index: 50;
-}
+/* Boot & Lock Screen */
+#boot { position: fixed; inset: 0; background: black; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; z-index: 50; }
+#lock { position: fixed; inset: 0; background: url("wallpaper.jpg") center/cover no-repeat; display: none; align-items: center; justify-content: center; backdrop-filter: blur(14px); z-index: 40; }
 
-/* LOCK SCREEN */
-#lock {
-  position: fixed;
-  inset: 0;
-  background: url("wallpaper.jpg") center/cover no-repeat;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(14px);
-  z-index: 40;
-}
+/* Desktop Elements */
+#desktop { position: fixed; inset: 0; background: url("wallpaper.jpg") center/cover no-repeat; display: none; }
+#menubar { position: absolute; top: 0; width: 100%; height: 26px; background: rgba(255,255,255,0.35); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; font-size: 13px; }
 
-#lockCard {
-  background: rgba(0,0,0,0.4);
-  padding: 28px 36px;
-  border-radius: 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-#avatar {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: #cfcfcf;
-}
-
-#username {
-  color: white;
-  font-size: 18px;
-}
-
-#password {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 16px;
-}
-
-#error {
-  color: white;
-  font-size: 14px;
-  display: none;
-}
-
-/* DESKTOP */
-#desktop {
-  position: fixed;
-  inset: 0;
-  background: url("wallpaper.jpg") center/cover no-repeat;
-  display: none;
-}
-
-/* MENU BAR */
-#menubar {
+/* Desktop Folders */
+.desktop-folder {
   position: absolute;
-  top: 0;
-  width: 100%;
-  height: 26px;
-  background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(20px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 14px;
-  font-size: 13px;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; user-select: none;
+  width: 80px;
 }
+.desktop-folder img { width: 56px; height: 56px; }
+.desktop-folder span { color: white; font-size: 12px; margin-top: 4px; text-align: center; }
 
-/* DESKTOP ICON */
-#videoFolder {
-  position: absolute;
-  top: 40px;
-  right: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-}
+/* Video Folder (Top Right) */
+#videoFolder { top: 40px; right: 40px; }
 
-#videoFolder img {
-  width: 56px;
-  height: 56px;
-}
+/* Notes Folder (Top Left) */
+#notesFolder { top: 120px; left: 40px; }
 
-#videoFolder span {
-  color: white;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-/* DOCK */
+/* Dock */
 #dock {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(22px);
-  padding: 10px 20px;
-  border-radius: 24px;
-  display: flex;
-  gap: 16px;
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.25); backdrop-filter: blur(22px);
+  padding: 10px 20px; border-radius: 24px; display: flex; gap: 16px;
 }
+.dock-icon { width: 64px; height: 64px; cursor: pointer; transition: transform 0.2s; }
+.dock-icon:hover { transform: scale(1.25); }
 
-.dock-icon {
-  width: 64px;
-  height: 64px;
-  cursor: pointer;
-  transition: transform 0.2s;
+/* Video Window */
+#videoWindow { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); z-index: 60; }
+#videoWindow video { max-width: 80%; max-height: 80%; border-radius: 12px; }
+
+/* Slideshow Window */
+#slideshowWindow {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.9); z-index: 70;
 }
-
-.dock-icon:hover {
-  transform: scale(1.25);
+.slideshow-container {
+  position: relative; width: 90%; max-width: 1000px; text-align: center;
 }
-
-/* VIDEO WINDOW */
-#videoWindow {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.85);
-  z-index: 60;
+.slideshow-img {
+  width: 100%; max-height: 75vh; border-radius: 16px; object-fit: contain;
 }
-
-#videoWindow video {
-  max-width: 80%;
-  max-height: 80%;
-  border-radius: 12px;
+.slideshow-nav {
+  position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; transform: translateY(-50%);
 }
-
-.closeVideo {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+.slideshow-btn {
+  background: rgba(0,0,0,0.6); color: white; border: none; width: 50px; height: 50px;
+  border-radius: 50%; font-size: 24px; cursor: pointer;
 }
-
-/* NOTES WINDOW */
-#notesWindow {
-  position: fixed;
-  inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.6);
-  z-index: 70;
-}
-
-.notes-box {
-  width: 560px;
-  max-height: 80vh;
-  background: #fff;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.notes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-}
-
-.notes-title {
-  font-weight: 600;
-}
-
-.closeNotes {
-  border: none;
-  background: #ff5f57;
-  color: white;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.notes-content {
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.notes-content h2 {
-  margin-top: 0;
-}
-
-.notes-images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.notes-images img {
-  width: 100%;
-  border-radius: 10px;
-  object-fit: cover;
+.closeSlideshow {
+  position: absolute; top: 20px; right: 20px; background: #ff5f57; color: white;
+  border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer;
 }
 </style>
 </head>
-
 <body>
 
-<!-- BOOT -->
+<!-- Boot Screen -->
 <div id="boot"></div>
 
-<!-- LOCK -->
+<!-- Lock Screen -->
 <div id="lock">
   <div id="lockCard">
     <div id="avatar"></div>
@@ -254,18 +89,26 @@ html, body {
   </div>
 </div>
 
-<!-- DESKTOP -->
+<!-- Desktop -->
 <div id="desktop">
   <div id="menubar">
     <div> Finder File Edit View Go Window Help</div>
     <div id="clock"></div>
   </div>
 
-  <div id="videoFolder" onclick="openVideo()">
+  <!-- Video Folder -->
+  <div id="videoFolder" class="desktop-folder" onclick="openVideo()">
     <img src="vlc.png">
     <span>Video</span>
   </div>
 
+  <!-- New Notes Folder -->
+  <div id="notesFolder" class="desktop-folder" onclick="openNotes()">
+    <img src="notes.png">
+    <span>READ ME 🚨</span>
+  </div>
+
+  <!-- Dock -->
   <div id="dock">
     <img class="dock-icon" src="finder.png">
     <img class="dock-icon" src="safari.png">
@@ -275,7 +118,7 @@ html, body {
   </div>
 </div>
 
-<!-- VIDEO WINDOW -->
+<!-- Video Window -->
 <div id="videoWindow">
   <button class="closeVideo" onclick="closeVideo()">✕</button>
   <video id="video" controls autoplay muted playsinline>
@@ -283,26 +126,14 @@ html, body {
   </video>
 </div>
 
-<!-- NOTES WINDOW -->
-<div id="notesWindow">
-  <div class="notes-box">
-    <div class="notes-header">
-      <span class="notes-title">Notes</span>
-      <button class="closeNotes" onclick="closeNotes()">✕</button>
-    </div>
-    <div class="notes-content">
-      <h2>READ ME🚨</h2>
-      <div class="notes-images">
-        <img src="note1.png">
-        <img src="note2.png">
-        <img src="note3.png">
-        <img src="note4.png">
-        <img src="note5.png">
-        <img src="note6.png">
-        <img src="note7.png">
-        <img src="note8.png">
-        <img src="note9.png">
-      </div>
+<!-- Slideshow Window -->
+<div id="slideshowWindow">
+  <div class="slideshow-container">
+    <button class="closeSlideshow" onclick="closeNotes()">✕</button>
+    <img id="slideImage" class="slideshow-img" src="note1.png" alt="Slide">
+    <div class="slideshow-nav">
+      <button class="slideshow-btn" onclick="prevSlide()">←</button>
+      <button class="slideshow-btn" onclick="nextSlide()">→</button>
     </div>
   </div>
 </div>
@@ -316,27 +147,30 @@ const desktop = document.getElementById("desktop");
 const passwordInput = document.getElementById("password");
 const error = document.getElementById("error");
 const clock = document.getElementById("clock");
-
-const videoWindow = document.getElementById("videoWindow");
 const video = document.getElementById("video");
+const videoWindow = document.getElementById("videoWindow");
+const slideshowWindow = document.getElementById("slideshowWindow");
+const slideImage = document.getElementById("slideImage");
 
-const notesWindow = document.getElementById("notesWindow");
+// Slideshow images
+const slides = [
+  "note1.png", "note2.png", "note3.png", "note4.png", "note5.png",
+  "note6.png", "note7.png", "note8.png", "note9.png"
+];
+let currentSlide = 0;
 
-/* CLOCK */
+/* Clock */
 setInterval(() => {
-  clock.textContent = new Date().toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  clock.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }, 1000);
 
-/* BOOT */
+/* Boot */
 setTimeout(() => {
   boot.style.display = "none";
   lock.style.display = "flex";
 }, 2000);
 
-/* UNLOCK */
+/* Unlock */
 function unlock() {
   if (passwordInput.value === CORRECT_PASSWORD) {
     lock.style.display = "none";
@@ -350,29 +184,52 @@ function unlock() {
   }
 }
 
-/* VIDEO */
+/* Video */
 function openVideo() {
   videoWindow.style.display = "flex";
   video.currentTime = 0;
   video.load();
   video.play().catch(() => {});
 }
-
 function closeVideo() {
   video.pause();
   video.currentTime = 0;
   videoWindow.style.display = "none";
 }
 
-/* NOTES */
+/* Slideshow */
 function openNotes() {
-  notesWindow.style.display = "flex";
+  currentSlide = 0;
+  showSlide();
+  slideshowWindow.style.display = "flex";
+}
+
+function showSlide() {
+  slideImage.src = slides[currentSlide];
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % slides.length;
+  showSlide();
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+  showSlide();
 }
 
 function closeNotes() {
-  notesWindow.style.display = "none";
+  slideshowWindow.style.display = "none";
 }
-</script>
 
+// Keyboard navigation
+document.addEventListener("keydown", (e) => {
+  if (slideshowWindow.style.display === "flex") {
+    if (e.key === "ArrowRight") nextSlide();
+    if (e.key === "ArrowLeft") prevSlide();
+    if (e.key === "Escape") closeNotes();
+  }
+});
+</script>
 </body>
 </html>
