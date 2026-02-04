@@ -3,287 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Uptown Project :) </title>
+<title>The Uptown Project :)</title>
 <style>
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
   background: black;
 }
 /* Boot */
 #boot {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-  color: white;
-  z-index: 50;
+  position: fixed; inset: 0; background: black; display: flex;
+  align-items: center; justify-content: center; font-size: 48px; color: white; z-index: 50;
 }
 /* Lock Screen */
 #lock {
-  position: fixed;
-  inset: 0;
-  background: url("wallpaper.jpg") center/cover no-repeat;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(14px);
-  z-index: 40;
+  position: fixed; inset: 0; background: url("wallpaper.jpg") center/cover no-repeat;
+  display: none; align-items: center; justify-content: center; backdrop-filter: blur(14px); z-index: 40;
 }
 #lockCard {
-  background: rgba(0,0,0,0.45);
-  padding: 36px 44px;
-  border-radius: 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  background: rgba(0,0,0,0.45); padding: 36px 44px; border-radius: 22px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
-/* BIGGER AVATAR */
-#avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-#username {
-  color: white;
-  font-size: 18px;
-}
-#password {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 16px;
-}
-#error {
-  color: white;
-  font-size: 14px;
-  display: none;
-}
+#avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+#username { color: white; font-size: 18px; }
+#password { padding: 10px 14px; border-radius: 12px; border: none; font-size: 16px; }
+#error { color: white; font-size: 14px; display: none; }
 /* Desktop */
 #desktop {
-  position: fixed;
-  inset: 0;
-  background: url("wallpaper.jpg") center/cover no-repeat;
-  display: none;
+  position: fixed; inset: 0; background: url("wallpaper.jpg") center/cover no-repeat; display: none;
 }
 #menubar {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 26px;
-  background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(20px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 14px;
-  font-size: 13px;
+  position: absolute; top: 0; width: 100%; height: 26px; background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center;
+  padding: 0 14px; font-size: 13px;
 }
 /* Desktop Icons */
 .desktop-folder {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  width: 80px;
+  position: absolute; display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; user-select: none; width: 80px;
 }
-.desktop-folder img {
-  width: 56px;
-  height: 56px;
-}
-.desktop-folder span {
-  color: white;
-  font-size: 12px;
-  margin-top: 4px;
-  text-align: center;
-}
+.desktop-folder img { width: 56px; height: 56px; }
+.desktop-folder span { color: white; font-size: 12px; margin-top: 4px; text-align: center; }
 #videoFolder { top: 40px; right: 40px; }
 #notesFolder { top: 120px; left: 40px; }
 /* Dock */
 #dock {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(22px);
-  padding: 10px 20px;
-  border-radius: 24px;
-  display: flex;
-  gap: 16px;
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.25); backdrop-filter: blur(22px);
+  padding: 10px 20px; border-radius: 24px; display: flex; gap: 16px;
 }
-.dock-icon {
-  width: 64px;
-  height: 64px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.dock-icon:hover {
-  transform: scale(1.25);
-}
+.dock-icon { width: 64px; height: 64px; cursor: pointer; transition: transform 0.2s; }
+.dock-icon:hover { transform: scale(1.25); }
 /* Video Window */
 #videoWindow {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.85);
-  z-index: 60;
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85); z-index: 60;
 }
-#videoWindow video {
-  max-width: 80%;
-  max-height: 80%;
-  border-radius: 12px;
-}
+#videoWindow video { max-width: 80%; max-height: 80%; border-radius: 12px; }
 .closeVideo {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff5f57;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
+  position: absolute; top: 20px; right: 20px; background: #ff5f57; border: none;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 20px; color: white; cursor: pointer;
 }
 /* Slideshow */
 #slideshowWindow {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.9);
-  z-index: 70;
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.9); z-index: 70;
 }
-.slideshow-container {
-  position: relative;
-  width: 90%;
-  max-width: 1000px;
-}
-.slideshow-img {
-  width: 100%;
-  max-height: 75vh;
-  border-radius: 16px;
-  object-fit: contain;
-}
+.slideshow-container { position: relative; width: 90%; max-width: 1000px; }
+.slideshow-img { width: 100%; max-height: 75vh; border-radius: 16px; object-fit: contain; }
 .slideshow-nav {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  transform: translateY(-50%);
+  position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between;
+  padding: 0 20px; transform: translateY(-50%);
 }
 .slideshow-btn {
-  background: rgba(0,0,0,0.6);
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
+  background: rgba(0,0,0,0.6); color: white; border: none; width: 50px; height: 50px;
+  border-radius: 50%; font-size: 24px; cursor: pointer;
 }
 .closeSlideshow {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff5f57;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
+  position: absolute; top: 20px; right: 20px; background: #ff5f57; border: none;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 20px; color: white; cursor: pointer;
 }
 /* Hint Window */
 #hintWindow {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(10px);
-  z-index: 50;
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 50;
 }
 .hint-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 20px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  max-width: 600px;
-  width: 90%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px; background: rgba(255,255,255,0.15); border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5); max-width: 600px; width: 90%;
 }
-.hint-title {
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.hint-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-.hint-inner img {
-  max-width: 200px;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-.hint-text {
-  margin-left: 30px;
-  color: white;
-  font-size: 20px;
-  line-height: 1.5;
-  text-align: left;
-}
+.hint-title { color: white; font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+.hint-inner { display: flex; align-items: center; justify-content: center; width: 100%; }
+.hint-inner img { max-width: 200px; height: auto; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+.hint-text { margin-left: 30px; color: white; font-size: 20px; line-height: 1.5; text-align: left; }
 .closeHint {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff5f57;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
+  position: absolute; top: 20px; right: 20px; background: #ff5f57; border: none;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 20px; color: white; cursor: pointer;
   transition: background 0.2s;
 }
-.closeHint:hover {
-  background: #e04e4a;
-}
+.closeHint:hover { background: #e04e4a; }
 </style>
 </head>
 <body>
+
 <!-- Boot -->
 <div id="boot"></div>
+
 <!-- Lock Screen -->
 <div id="lock">
   <div id="lockCard">
@@ -292,10 +118,13 @@ html, body {
     <input id="password" type="password" placeholder="Password">
     <button onclick="unlock()">Unlock</button>
     <button id="hintButton">Password Hint</button>
-    <div style="color: white; font-size: 14px; text-align: center; margin: 10px 0;">Make sure the first letter is capitalized and 7 letters 4 numbers :) </div>
+    <div style="color: white; font-size: 14px; text-align: center; margin: 10px 0;">
+      Make sure the first letter is capitalized and 7 letters 4 numbers :)
+    </div>
     <div id="error">Incorrect Password</div>
   </div>
 </div>
+
 <!-- Desktop -->
 <div id="desktop">
   <div id="menubar">
@@ -318,6 +147,7 @@ html, body {
     <img class="dock-icon" src="terminal.png">
   </div>
 </div>
+
 <!-- Video -->
 <div id="videoWindow">
   <button class="closeVideo" onclick="closeVideo()">✕</button>
@@ -325,6 +155,7 @@ html, body {
     <source src="video.mp4" type="video/mp4">
   </video>
 </div>
+
 <!-- Slideshow -->
 <div id="slideshowWindow">
   <div class="slideshow-container">
@@ -336,6 +167,7 @@ html, body {
     </div>
   </div>
 </div>
+
 <!-- Hint Window -->
 <div id="hintWindow">
   <button class="closeHint" onclick="closeHint()">✕</button>
@@ -351,8 +183,10 @@ html, body {
     </div>
   </div>
 </div>
+
 <script>
-const CORRECT_PASSWORD = "Patrick2924";
+const CORRECT_PASSWORDS = ["Patrick2924", "SpongeBob2924"];
+
 const boot = document.getElementById("boot");
 const lock = document.getElementById("lock");
 const desktop = document.getElementById("desktop");
@@ -365,31 +199,30 @@ const slideshowWindow = document.getElementById("slideshowWindow");
 const slideImage = document.getElementById("slideImage");
 const hintWindow = document.getElementById("hintWindow");
 const hintButton = document.getElementById("hintButton");
+
 const slides = [
   "notes1.png","notes2.png","notes3.png","notes4.png","notes5.png",
   "notes6.png","notes7.png","notes8.png","notes9.png"
 ];
 let currentSlide = 0;
+
 /* Preload slides */
-slides.forEach(src => {
-  const img = new Image();
-  img.src = src;
-});
+slides.forEach(src => { const img = new Image(); img.src = src; });
+
 /* Clock */
 setInterval(() => {
-  clock.textContent = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }, 1000);
+
 /* Boot */
 setTimeout(() => {
   boot.style.display = "none";
   lock.style.display = "flex";
 }, 2000);
-/* Unlock */
+
+/* Unlock - now accepts TWO passwords */
 function unlock() {
-  if (passwordInput.value === CORRECT_PASSWORD) {
+  if (CORRECT_PASSWORDS.includes(passwordInput.value)) {
     lock.style.display = "none";
     desktop.style.display = "block";
     passwordInput.value = "";
@@ -400,6 +233,7 @@ function unlock() {
     passwordInput.value = "";
   }
 }
+
 /* Video */
 function openVideo() {
   videoWindow.style.display = "flex";
@@ -412,6 +246,7 @@ function closeVideo() {
   video.currentTime = 0;
   videoWindow.style.display = "none";
 }
+
 /* Slideshow */
 function openNotes() {
   currentSlide = 0;
@@ -419,12 +254,9 @@ function openNotes() {
   showSlide();
 }
 function showSlide() {
-  slideImage.src = "";
   slideImage.src = slides[currentSlide];
 }
-slideImage.onerror = () => {
-  slideImage.src = slides[0];
-};
+slideImage.onerror = () => { slideImage.src = slides[0]; };
 function nextSlide() {
   currentSlide = (currentSlide + 1) % slides.length;
   showSlide();
@@ -436,6 +268,7 @@ function prevSlide() {
 function closeNotes() {
   slideshowWindow.style.display = "none";
 }
+
 /* Hint */
 hintButton.addEventListener("click", () => {
   hintWindow.style.display = "flex";
@@ -443,6 +276,7 @@ hintButton.addEventListener("click", () => {
 function closeHint() {
   hintWindow.style.display = "none";
 }
+
 /* Keyboard */
 document.addEventListener("keydown", e => {
   if (slideshowWindow.style.display === "flex") {
